@@ -164,6 +164,11 @@
     .upload-box:hover { background:#101629; }
     .upload-box input { display:block;width:100%;margin-top:12px;color:var(--muted);font-size:12px; }
     .image-preview { display:none;width:100%;max-height:220px;object-fit:contain;margin-top:12px;border-radius:10px;background:#080b14; }
+    .generated-result { display:none;margin-top:18px;padding:14px;border:1px solid var(--border);border-radius:14px;background:rgba(0,0,0,.18); }
+    .generated-result.show { display:block; }
+    .generated-result img { display:block;width:100%;max-height:560px;object-fit:contain;border-radius:10px;background:#080b14; }
+    .generated-result .result-actions { display:flex;gap:10px;flex-wrap:wrap;margin-top:12px; }
+    .generated-result .result-actions a { text-align:center; }
 
     .credit-summary {
       display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;
@@ -276,7 +281,7 @@
       <div class="container">
         <div class="section-heading">
           <h2>Your <span class="gradient-text">AI Studio</span></h2>
-          <p>Choose your model, format and settings before preparing a request.</p>
+          <p>Describe your idea, choose a style and create an image right here.</p>
         </div>
 
         <div class="tool-grid">
@@ -316,7 +321,7 @@
                   <span class="model-desc">Highest quality tier • 20 extra credits</span>
                 </button>
               </div>
-              <p class="model-note">These are quality tiers for now. Real image models are not connected yet.</p>
+              <p class="model-note">The selected quality is sent with your request. Actual quality and availability depend on the connected AI model.</p>
             </div>
 
             <div class="two-col">
@@ -346,9 +351,16 @@
               <div class="credit-total"><strong id="imageCost">0</strong><span>credits</span></div>
             </div>
 
-           <button type="button" class="btn full-width" id="prepareImage">Prepare Image Request</button> <a class="btn btn-secondary full-width" href="https://huggingface.co/spaces/black-forest-labs/FLUX.1-dev" target="_blank" rel="noopener noreferrer" style="text-align:center;margin-top:10px;">Open Free AI Image Generator ↗</a>
-
+           <button type="button" class="btn full-width" id="prepareImage">✨ Generate Image</button>
             <div class="notice" id="imageNotice" role="status" aria-live="polite"></div>
+            <div class="generated-result" id="generatedResult" aria-live="polite">
+              <strong>Your generated image</strong>
+              <img id="generatedImage" alt="AI-generated result">
+              <div class="result-actions">
+                <a class="btn btn-secondary" id="downloadImage" href="#" download="webspark-ai-image.png">⬇ Download Image</a>
+                <button type="button" class="btn btn-secondary" id="generateAnother">Generate Another</button>
+              </div>
+            </div>
           </section>
 
           <!-- VIDEO GENERATOR -->
@@ -397,7 +409,7 @@
                   <span class="model-desc">Premium quality tier • 20 extra credits</span>
                 </button>
               </div>
-              <p class="model-note">These are quality tiers, not connected Veo or other provider models.</p>
+              <p class="model-note">Video generation is not connected yet; this section currently previews settings and estimates only.</p>
             </div>
 
             <div class="two-col">
@@ -451,7 +463,7 @@
       <div class="container">
         <div class="section-heading">
           <h2>Choose your <span class="gradient-text">plan</span></h2>
-          <p>Five proposed plans for different creative needs.</p>
+          <p>Plan cards are informational examples; purchases and credit balances are not active.</p>
         </div>
 
         <div class="pricing-grid">
@@ -689,7 +701,12 @@
         clearNotice("videoNotice");
       });
 
-      $("prepareImage").addEventListener("click", () => {
+      // Image generation is routed through a server-side Worker so the HF token
+      // is never exposed in this public GitHub Pages frontend.
+      const IMAGE_API_URL = "https://webspark-image-api.sarikagarg15091987.workers.dev/";
+      let generatedImageUrl = null;
+
+      async function generateImage() {
         const prompt = $("imagePrompt").value.trim();
 
         if (!prompt) {
@@ -698,24 +715,87 @@
           return;
         }
 
-        const modelNames = ["Normal", "Better", "High", "Ultra"];
-        const request = {
-          prompt,
-          model: modelNames[selectedImageModel],
-          extraCredits: imageModelCredits[selectedImageModel],
-          style: $("imageStyle").value,
-          aspectRatio: $("imageRatio").value
-        };
+        const button = $("prepareImage");
+        const result = $("generatedResult");
+        const originalLabel = button.textContent;
+        button.disabled = true;
+        button.textContent = "⏳ Creating image…";
+        clearNotice("imageNotice");
+        result.classList.remove("show");
 
-        showNotice(
-          "imageNotice",
-          "Image request prepared • " + request.model +
-          " • " + request.style +
-          " • Ratio " + request.aspectRatio +
-          " • Estimated extra model credits: " + request.extraCredits +
-          ". Real generation is not connected yet."
-        );
-      });
+        const style = $("imageStyle").value;
+        const ratio = $("imageRatio").value;
+        const modelNames = ["Normal", "Better", "High", "Ultra"];
+
+        // Add the style to the prompt so it influences the generated result.
+        const styledPrompt = prompt + ", " + style + " style, aspect ratio " + ratio +
+          ", high quality, well-composed image";
+
+        try {
+          const response = await fetch(IMAGE_API_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              prompt: styledPrompt,
+              style,
+              ratio,
+              quality: modelNames[selectedImageModel]
+            })
+          });
+
+          const contentType = response.headers.get("content-type") || "";
+
+          if (!response.ok) {
+            let detail = "The image service could not complete the request.";
+            if (contentType.includes("application/json")) {
+              const errorData = await response.json().catch(() => ({}));
+              detail = errorData.error || errorData.message || detail;
+            } else {
+              const textBody = await response.text().catch(() => "");
+              if (textBody) detail = textBody.slice(0, 220);
+            }
+            throw new Error(detail + " (HTTP " + response.status + ")");
+          }
+
+          if (!contentType.startsWith("image/")) {
+            const bodyText = await response.text().catch(() => "");
+            throw new Error("The AI service did not return an image. " + bodyText.slice(0, 180));
+          }
+
+          const imageBlob = await response.blob();
+          if (!imageBlob.size) throw new Error("The AI service returned an empty image.");
+
+          if (generatedImageUrl) URL.revokeObjectURL(generatedImageUrl);
+          generatedImageUrl = URL.createObjectURL(imageBlob);
+
+          const image = $("generatedImage");
+          image.src = generatedImageUrl;
+          $("downloadImage").href = generatedImageUrl;
+          $("downloadImage").download = "webspark-ai-" + Date.now() + ".png";
+          result.classList.add("show");
+
+          showNotice(
+            "imageNotice",
+            "Image created successfully • " + modelNames[selectedImageModel] +
+            " • " + style + " • " + ratio + ". You can preview it below and download it."
+          );
+          result.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        } catch (error) {
+          console.error("WebSpark image generation error:", error);
+          showNotice(
+            "imageNotice",
+            "Image generation failed: " + (error.message || "Unknown error") +
+            " Check the Worker deployment, Hugging Face model availability and free quota, then try again.",
+            "error"
+          );
+        } finally {
+          button.disabled = false;
+          button.textContent = originalLabel;
+        }
+      }
+
+      $("prepareImage").addEventListener("click", generateImage);
+      $("generateAnother").addEventListener("click", generateImage);
 
       $("prepareVideo").addEventListener("click", () => {
         if (!uploadedImage) {
