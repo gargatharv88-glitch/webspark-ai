@@ -4,555 +4,237 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#080b14">
-  <meta name="description" content="WebSpark AI — explore AI image generation, image-to-video tools, creative models, and more.">
+  <meta name="description" content="WebSpark AI is a creative AI studio for image and video tools.">
   <title>WebSpark AI — Create Without Limits</title>
 
   <style>
     :root {
-      --bg: #080b14;
-      --panel: #101626;
-      --panel2: #151e31;
-      --border: rgba(255,255,255,.10);
-      --text: #f5f7ff;
-      --muted: #a3aec5;
-      --purple: #9c7bff;
-      --cyan: #64e4ff;
-      --green: #6fffc1;
-      --danger: #ff8295;
+      --bg:#080b14;
+      --panel:#101626;
+      --panel2:#151e31;
+      --border:rgba(255,255,255,.10);
+      --text:#f5f7ff;
+      --muted:#a3aec5;
+      --purple:#9c7bff;
+      --cyan:#64e4ff;
+      --green:#6fffc1;
     }
 
-    * { box-sizing: border-box; }
-
-    html { scroll-behavior: smooth; }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
 
     body {
-      margin: 0;
+      margin:0;
+      color:var(--text);
       background:
-        radial-gradient(ellipse at 15% 0%, rgba(104,76,220,.19), transparent 38%),
-        radial-gradient(ellipse at 90% 15%, rgba(40,171,206,.11), transparent 30%),
+        radial-gradient(ellipse at 15% 0%,rgba(104,76,220,.19),transparent 38%),
+        radial-gradient(ellipse at 90% 15%,rgba(40,171,206,.11),transparent 30%),
         var(--bg);
-      color: var(--text);
-      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      line-height: 1.6;
+      font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      line-height:1.6;
     }
 
-    button, input, textarea, select { font: inherit; }
+    button,input,textarea,select { font:inherit; }
+    button,a,select,input { -webkit-tap-highlight-color:transparent; }
+    a { color:inherit;text-decoration:none; }
+    button { cursor:pointer; }
 
-    button, a, select, input { -webkit-tap-highlight-color: transparent; }
-
-    a { color: inherit; text-decoration: none; }
-
-    button { cursor: pointer; }
-
-    .container {
-      width: min(1120px, calc(100% - 36px));
-      margin: auto;
-    }
+    .container { width:min(1120px,calc(100% - 36px));margin:auto; }
 
     .navbar {
-      position: sticky;
-      top: 0;
-      z-index: 10;
-      background: rgba(8,11,20,.86);
-      backdrop-filter: blur(18px);
-      border-bottom: 1px solid var(--border);
+      position:sticky;top:0;z-index:10;
+      background:rgba(8,11,20,.88);
+      backdrop-filter:blur(18px);
+      border-bottom:1px solid var(--border);
     }
 
     .nav-inner {
-      min-height: 72px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 20px;
+      min-height:72px;display:flex;
+      align-items:center;justify-content:space-between;gap:20px;
     }
 
-    .logo {
-      font-size: 22px;
-      font-weight: 850;
-      letter-spacing: -.7px;
-    }
-
+    .logo { font-size:22px;font-weight:850;letter-spacing:-.7px; }
     .logo span {
-      background: linear-gradient(90deg, var(--purple), var(--cyan));
-      background-clip: text;
-      -webkit-background-clip: text;
-      color: transparent;
+      background:linear-gradient(90deg,var(--purple),var(--cyan));
+      background-clip:text;-webkit-background-clip:text;color:transparent;
     }
 
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 24px;
-      color: var(--muted);
-      font-size: 14px;
-    }
+    .nav-links { display:flex;align-items:center;gap:22px;color:var(--muted);font-size:14px; }
+    .nav-links a:hover { color:white; }
+    .nav-button { padding:10px 15px;border:1px solid var(--border);border-radius:12px;background:var(--panel);color:white; }
+    .menu-button { display:none;background:var(--panel);border:1px solid var(--border);color:white;padding:9px 12px;border-radius:10px; }
 
-    .nav-links a:hover { color: white; }
-
-    .nav-button {
-      padding: 10px 16px;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      color: white;
-      background: var(--panel);
-    }
-
-    .menu-button {
-      display: none;
-      background: var(--panel);
-      border: 1px solid var(--border);
-      color: white;
-      padding: 9px 12px;
-      border-radius: 10px;
-    }
-
-    .hero {
-      padding: 82px 0 55px;
-      text-align: center;
-    }
+    .hero { padding:82px 0 55px;text-align:center; }
 
     .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 7px 13px;
-      border: 1px solid rgba(156,123,255,.32);
-      background: rgba(156,123,255,.09);
-      color: #d8cbff;
-      border-radius: 999px;
-      font-size: 12px;
-      font-weight: 700;
+      display:inline-flex;padding:7px 13px;
+      border:1px solid rgba(156,123,255,.32);
+      background:rgba(156,123,255,.09);
+      color:#d8cbff;border-radius:999px;
+      font-size:12px;font-weight:700;
     }
 
     h1 {
-      max-width: 850px;
-      margin: 23px auto 15px;
-      font-size: clamp(39px, 7vw, 74px);
-      line-height: 1.04;
-      letter-spacing: -3px;
+      max-width:850px;margin:23px auto 15px;
+      font-size:clamp(39px,7vw,74px);
+      line-height:1.04;letter-spacing:-3px;
     }
 
     .gradient-text {
-      background: linear-gradient(95deg, #b6a0ff, #72eaff 60%, #87ffd1);
-      background-clip: text;
-      -webkit-background-clip: text;
-      color: transparent;
+      background:linear-gradient(95deg,#b6a0ff,#72eaff 60%,#87ffd1);
+      background-clip:text;-webkit-background-clip:text;color:transparent;
     }
 
-    .hero p {
-      max-width: 680px;
-      margin: 0 auto;
-      color: var(--muted);
-      font-size: 17px;
-    }
+    .hero p { max-width:680px;margin:0 auto;color:var(--muted);font-size:17px; }
 
-    .hero-actions {
-      margin-top: 27px;
-      display: flex;
-      justify-content: center;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
+    .hero-actions { margin-top:27px;display:flex;justify-content:center;gap:12px;flex-wrap:wrap; }
 
     .btn {
-      border: 0;
-      border-radius: 12px;
-      padding: 12px 18px;
-      font-weight: 750;
-      color: #090c14;
-      background: linear-gradient(100deg, #b7a2ff, #6ee7ff);
-      transition: transform .15s, opacity .15s;
+      display:inline-block;border:0;border-radius:12px;padding:12px 18px;
+      font-weight:750;color:#090c14;
+      background:linear-gradient(100deg,#b7a2ff,#6ee7ff);
+      transition:transform .15s,opacity .15s;
     }
 
-    .btn:hover { transform: translateY(-1px); }
+    .btn:hover { transform:translateY(-1px); }
+    .btn:disabled { opacity:.55;cursor:not-allowed;transform:none; }
+    .btn-secondary { color:white;background:var(--panel2);border:1px solid var(--border); }
 
-    .btn:disabled {
-      opacity: .55;
-      cursor: not-allowed;
-      transform: none;
-    }
+    .stats { display:grid;grid-template-columns:repeat(3,1fr);max-width:660px;margin:40px auto 0;gap:12px; }
+    .stat { padding:15px 10px;border:1px solid var(--border);background:rgba(16,22,38,.65);border-radius:15px; }
+    .stat strong { display:block;font-size:19px; }
+    .stat span { color:var(--muted);font-size:12px; }
 
-    .btn-secondary {
-      color: white;
-      background: var(--panel2);
-      border: 1px solid var(--border);
-    }
+    .section { padding:45px 0 65px; }
+    .section-heading { text-align:center;margin-bottom:30px; }
+    .section-heading h2 { font-size:clamp(27px,4vw,39px);margin:0 0 9px;letter-spacing:-1.2px; }
+    .section-heading p { color:var(--muted);margin:0; }
 
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      max-width: 660px;
-      margin: 40px auto 0;
-      gap: 12px;
-    }
-
-    .stat {
-      padding: 15px 10px;
-      border: 1px solid var(--border);
-      background: rgba(16,22,38,.65);
-      border-radius: 15px;
-    }
-
-    .stat strong { display: block; font-size: 19px; }
-
-    .stat span { color: var(--muted); font-size: 12px; }
-
-    .section { padding: 45px 0 65px; }
-
-    .section-heading {
-      text-align: center;
-      margin-bottom: 30px;
-    }
-
-    .section-heading h2 {
-      font-size: clamp(27px, 4vw, 39px);
-      margin: 0 0 9px;
-      letter-spacing: -1.2px;
-    }
-
-    .section-heading p {
-      color: var(--muted);
-      margin: 0;
-    }
-
-    .tool-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0,1fr));
-      gap: 20px;
-      align-items: start;
-    }
+    .tool-grid { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;align-items:start; }
 
     .card {
-      min-width: 0;
-      padding: 24px;
-      border: 1px solid var(--border);
-      background: linear-gradient(145deg, rgba(20,28,47,.97), rgba(12,17,30,.97));
-      border-radius: 20px;
-      box-shadow: 0 15px 45px rgba(0,0,0,.12);
+      min-width:0;padding:24px;border:1px solid var(--border);
+      background:linear-gradient(145deg,rgba(20,28,47,.97),rgba(12,17,30,.97));
+      border-radius:20px;box-shadow:0 15px 45px rgba(0,0,0,.12);
     }
 
-    .card-header {
-      display: flex;
-      align-items: flex-start;
-      gap: 13px;
-      margin-bottom: 19px;
-    }
-
+    .card-header { display:flex;align-items:flex-start;gap:13px;margin-bottom:19px; }
     .card-icon {
-      width: 47px;
-      height: 47px;
-      flex: 0 0 47px;
-      display: grid;
-      place-items: center;
-      font-size: 23px;
-      background: rgba(156,123,255,.13);
-      border: 1px solid rgba(156,123,255,.20);
-      border-radius: 14px;
+      width:47px;height:47px;flex:0 0 47px;display:grid;place-items:center;
+      font-size:23px;background:rgba(156,123,255,.13);
+      border:1px solid rgba(156,123,255,.2);border-radius:14px;
     }
 
-    .card h3 { margin: 0; font-size: 21px; }
+    .card h3 { margin:0;font-size:21px; }
+    .card-header p { margin:3px 0 0;color:var(--muted);font-size:13px; }
+    .field { margin:17px 0; }
+    .field label { display:block;font-size:13px;font-weight:750;margin-bottom:8px; }
+    .field small { color:var(--muted);display:block;margin-top:6px;font-size:11px; }
 
-    .card-header p {
-      margin: 3px 0 0;
-      color: var(--muted);
-      font-size: 13px;
+    textarea,input[type="text"],select {
+      display:block;width:100%;min-width:0;padding:12px 13px;color:var(--text);
+      background:#0a0f1c;border:1px solid var(--border);border-radius:11px;outline:none;
     }
 
-    .field { margin: 17px 0; }
-
-    .field label {
-      display: block;
-      font-size: 13px;
-      font-weight: 750;
-      margin-bottom: 8px;
-    }
-
-    .field small {
-      color: var(--muted);
-      display: block;
-      margin-top: 6px;
-      font-size: 11px;
-    }
-
-    textarea, input[type="text"], select {
-      display: block;
-      width: 100%;
-      min-width: 0;
-      padding: 12px 13px;
-      color: var(--text);
-      background: #0a0f1c;
-      border: 1px solid var(--border);
-      border-radius: 11px;
-      outline: none;
-    }
-
-    textarea { resize: vertical; min-height: 110px; }
-
-    textarea:focus, input:focus, select:focus {
-      border-color: var(--purple);
-      box-shadow: 0 0 0 3px rgba(156,123,255,.1);
-    }
-
-    select option {
-      background: #101626;
-      color: white;
-    }
-
-    .two-col {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0,1fr));
-      gap: 13px;
-    }
+    textarea { resize:vertical;min-height:110px; }
+    textarea:focus,input:focus,select:focus { border-color:var(--purple);box-shadow:0 0 0 3px rgba(156,123,255,.1); }
+    select option { background:#101626;color:white; }
+    .two-col { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px; }
 
     .model-option {
-      display: block;
-      width: 100%;
-      text-align: left;
-      padding: 12px;
-      margin: 8px 0;
-      color: var(--text);
-      background: #0b1120;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      transition: border-color .15s, background .15s;
+      display:block;width:100%;text-align:left;padding:12px;margin:8px 0;
+      color:var(--text);background:#0b1120;border:1px solid var(--border);
+      border-radius:12px;transition:border-color .15s,background .15s;
     }
 
-    .model-option:hover {
-      border-color: rgba(156,123,255,.65);
-    }
-
-    .model-option.selected {
-      border-color: var(--purple);
-      background: rgba(156,123,255,.10);
-      box-shadow: inset 0 0 0 1px rgba(156,123,255,.12);
-    }
-
-    .model-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-    }
-
-    .model-name { font-weight: 800; font-size: 14px; }
-
-    .model-credit {
-      font-size: 11px;
-      font-weight: 800;
-      border-radius: 7px;
-      padding: 3px 7px;
-      white-space: nowrap;
-      background: rgba(111,255,193,.10);
-      color: var(--green);
-    }
-
-    .model-credit.paid {
-      color: #e1d6ff;
-      background: rgba(156,123,255,.17);
-    }
-
-    .model-desc {
-      color: var(--muted);
-      display: block;
-      font-size: 12px;
-      margin-top: 4px;
-    }
-
-    .model-note {
-      color: var(--muted);
-      font-size: 12px;
-      margin: 9px 0 0;
-    }
+    .model-option:hover { border-color:rgba(156,123,255,.65); }
+    .model-option.selected { border-color:var(--purple);background:rgba(156,123,255,.10);box-shadow:inset 0 0 0 1px rgba(156,123,255,.12); }
+    .model-top { display:flex;align-items:center;justify-content:space-between;gap:10px; }
+    .model-name { font-weight:800;font-size:14px; }
+    .model-credit { font-size:11px;font-weight:800;border-radius:7px;padding:3px 7px;white-space:nowrap;background:rgba(111,255,193,.10);color:var(--green); }
+    .model-credit.paid { color:#e1d6ff;background:rgba(156,123,255,.17); }
+    .model-desc { color:var(--muted);display:block;font-size:12px;margin-top:4px; }
+    .model-note { color:var(--muted);font-size:12px;margin:9px 0 0; }
 
     .upload-box {
-      display: block;
-      padding: 23px 14px;
-      text-align: center;
-      background: #0a0f1c;
-      border: 1px dashed rgba(156,123,255,.5);
-      border-radius: 13px;
-      cursor: pointer;
+      display:block;padding:23px 14px;text-align:center;background:#0a0f1c;
+      border:1px dashed rgba(156,123,255,.5);border-radius:13px;cursor:pointer;
     }
 
-    .upload-box:hover { background: #101629; }
-
-    .upload-box input {
-      display: block;
-      width: 100%;
-      margin-top: 12px;
-      color: var(--muted);
-      font-size: 12px;
-    }
-
-    .image-preview {
-      display: none;
-      width: 100%;
-      max-height: 220px;
-      object-fit: contain;
-      margin-top: 12px;
-      border-radius: 10px;
-      background: #080b14;
-    }
+    .upload-box:hover { background:#101629; }
+    .upload-box input { display:block;width:100%;margin-top:12px;color:var(--muted);font-size:12px; }
+    .image-preview { display:none;width:100%;max-height:220px;object-fit:contain;margin-top:12px;border-radius:10px;background:#080b14; }
 
     .credit-summary {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 12px;
-      align-items: center;
-      margin: 18px 0;
-      padding: 15px;
-      background: rgba(0,0,0,.2);
-      border: 1px solid var(--border);
-      border-radius: 13px;
+      display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;
+      margin:18px 0;padding:15px;background:rgba(0,0,0,.2);
+      border:1px solid var(--border);border-radius:13px;
     }
 
-    .credit-summary span {
-      display: block;
-      color: var(--muted);
-      font-size: 12px;
-    }
+    .credit-summary span { display:block;color:var(--muted);font-size:12px; }
+    .credit-summary strong { font-size:21px; }
+    .credit-total { text-align:right;color:var(--cyan); }
+    .full-width { width:100%;text-align:center; }
 
-    .credit-summary strong { font-size: 21px; }
+    .notice { display:none;margin-top:14px;padding:12px 13px;border-radius:11px;font-size:13px;overflow-wrap:anywhere; }
+    .notice.show { display:block; }
+    .notice.info { background:rgba(100,228,255,.08);border:1px solid rgba(100,228,255,.2);color:#c5f6ff; }
+    .notice.error { background:rgba(255,130,149,.09);border:1px solid rgba(255,130,149,.25);color:#ffb5c0; }
 
-    .credit-total {
-      text-align: right;
-      color: var(--cyan);
-    }
+    .features { display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px; }
+    .feature { border:1px solid var(--border);background:rgba(16,22,38,.7);border-radius:16px;padding:20px; }
+    .feature h3 { margin:8px 0;font-size:16px; }
+    .feature p { margin:0;color:var(--muted);font-size:13px; }
 
-    .full-width { width: 100%; }
-
-    .notice {
-      display: none;
-      margin-top: 14px;
-      padding: 12px 13px;
-      border-radius: 11px;
-      font-size: 13px;
-      overflow-wrap: anywhere;
-    }
-
-    .notice.show { display: block; }
-
-    .notice.info {
-      background: rgba(100,228,255,.08);
-      border: 1px solid rgba(100,228,255,.2);
-      color: #c5f6ff;
-    }
-
-    .notice.error {
-      background: rgba(255,130,149,.09);
-      border: 1px solid rgba(255,130,149,.25);
-      color: #ffb5c0;
-    }
-
-    .features {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0,1fr));
-      gap: 16px;
-    }
-
-    .feature {
-      border: 1px solid var(--border);
-      background: rgba(16,22,38,.7);
-      border-radius: 16px;
-      padding: 20px;
-    }
-
-    .feature h3 { margin: 8px 0; font-size: 16px; }
-
-    .feature p { margin: 0; color: var(--muted); font-size: 13px; }
-
-    .pricing-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0,1fr));
-      gap: 16px;
-    }
-
+    .pricing-grid { display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;align-items:stretch; }
     .price-card {
-      border: 1px solid var(--border);
-      background: rgba(16,22,38,.72);
-      border-radius: 17px;
-      padding: 22px;
+      display:flex;flex-direction:column;
+      border:1px solid var(--border);background:rgba(16,22,38,.72);
+      border-radius:17px;padding:22px;min-width:0;
     }
 
-    .price-card h3 { margin: 0; }
+    .price-card h3 { margin:0; }
+    .price { font-size:29px;font-weight:850;margin:13px 0 0; }
+    .price-card p { color:var(--muted);font-size:13px; }
+    .price-card ul { padding-left:18px;color:var(--muted);font-size:13px;line-height:2;flex:1; }
+    .price-card.highlight { border-color:rgba(156,123,255,.6);background:linear-gradient(145deg,rgba(70,48,126,.28),rgba(16,22,38,.8)); }
+    .plan-label { align-self:flex-start;font-size:11px;padding:4px 8px;background:rgba(156,123,255,.15);color:#e1d6ff;border-radius:7px;margin-bottom:12px; }
 
-    .price {
-      font-size: 29px;
-      font-weight: 850;
-      margin: 13px 0 0;
+    .faq { max-width:780px;margin:auto; }
+    details { border-bottom:1px solid var(--border);padding:16px 0; }
+    summary { cursor:pointer;font-weight:750; }
+    details p { color:var(--muted);font-size:14px; }
+
+    footer { padding:27px 0;border-top:1px solid var(--border);color:var(--muted);font-size:12px; }
+    .footer-inner { display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap; }
+    .footer-links { display:flex;gap:15px;flex-wrap:wrap; }
+
+    @media(max-width:850px) {
+      .pricing-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+      .tool-grid { grid-template-columns:1fr; }
     }
 
-    .price-card p { color: var(--muted); font-size: 13px; }
-
-    .price-card ul {
-      padding-left: 18px;
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 2;
-    }
-
-    .price-card.highlight {
-      border-color: rgba(156,123,255,.6);
-      background: linear-gradient(145deg, rgba(70,48,126,.28), rgba(16,22,38,.8));
-    }
-
-    .faq { max-width: 780px; margin: auto; }
-
-    details {
-      border-bottom: 1px solid var(--border);
-      padding: 16px 0;
-    }
-
-    summary { cursor: pointer; font-weight: 750; }
-
-    details p { color: var(--muted); font-size: 14px; }
-
-    footer {
-      padding: 27px 0;
-      border-top: 1px solid var(--border);
-      color: var(--muted);
-      font-size: 12px;
-    }
-
-    .footer-inner {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 15px;
-      flex-wrap: wrap;
-    }
-
-    .footer-links { display: flex; gap: 15px; flex-wrap: wrap; }
-
-    @media (max-width: 780px) {
-      .tool-grid { grid-template-columns: 1fr; }
-      .features, .pricing-grid { grid-template-columns: 1fr; }
-      .hero { padding-top: 60px; }
-      h1 { letter-spacing: -1.8px; }
+    @media(max-width:780px) {
+      .features { grid-template-columns:1fr; }
+      .hero { padding-top:60px; }
+      h1 { letter-spacing:-1.8px; }
       .nav-links {
-        display: none;
-        position: absolute;
-        top: 72px;
-        left: 0;
-        right: 0;
-        padding: 18px;
-        background: #0c1120;
-        border-bottom: 1px solid var(--border);
-        flex-direction: column;
-        align-items: stretch;
+        display:none;position:absolute;top:72px;left:0;right:0;padding:18px;
+        background:#0c1120;border-bottom:1px solid var(--border);
+        flex-direction:column;align-items:stretch;
       }
-      .nav-links.open { display: flex; }
-      .menu-button { display: block; }
+      .nav-links.open { display:flex; }
+      .menu-button { display:block; }
     }
 
-    @media (max-width: 440px) {
-      .container { width: calc(100% - 24px); }
-      .card { padding: 17px; }
-      .two-col { grid-template-columns: 1fr; }
-      .stats { gap: 7px; }
-      .stat strong { font-size: 16px; }
-      .stat span { font-size: 10px; }
-      .credit-summary strong { font-size: 18px; }
+    @media(max-width:520px) {
+      .container { width:calc(100% - 24px); }
+      .card { padding:17px; }
+      .two-col,.pricing-grid { grid-template-columns:1fr; }
+      .stats { gap:7px; }
+      .stat strong { font-size:16px; }
+      .stat span { font-size:10px; }
+      .credit-summary strong { font-size:18px; }
     }
   </style>
 </head>
@@ -561,16 +243,13 @@
   <header class="navbar">
     <div class="container nav-inner">
       <a class="logo" href="#home">WebSpark <span>AI</span></a>
-
-      <button class="menu-button" id="menuButton" type="button"
-              aria-label="Open navigation" aria-expanded="false">☰</button>
-
+      <button class="menu-button" id="menuButton" type="button" aria-label="Open navigation" aria-expanded="false">☰</button>
       <nav class="nav-links" id="navLinks">
         <a href="#tools">AI Studio</a>
         <a href="#features">Features</a>
         <a href="#pricing">Pricing</a>
         <a href="#faq">FAQ</a>
-        <a class="nav-button" href="#tools">Explore Tools ↗</a>
+        <a class="nav-button" href="#tools">Start Creating ↗</a>
       </nav>
     </div>
   </header>
@@ -580,19 +259,14 @@
       <div class="container">
         <span class="badge">✦ YOUR CREATIVE AI STUDIO</span>
         <h1>Turn your ideas into <span class="gradient-text">visual magic.</span></h1>
-        <p>
-          Explore creative AI tools for images and videos. Choose the quality
-          you want, select your format, and prepare your creation.
-        </p>
-
+        <p>Explore AI image and video tools, choose your quality level, and prepare your creative requests in one place.</p>
         <div class="hero-actions">
           <a class="btn" href="#tools">Start Creating →</a>
-          <a class="btn btn-secondary" href="#features">Explore Features</a>
+          <a class="btn btn-secondary" href="#pricing">Explore Plans</a>
         </div>
-
         <div class="stats">
           <div class="stat"><strong>4 Levels</strong><span>Choose quality</span></div>
-          <div class="stat"><strong>4 Durations</strong><span>Video options</span></div>
+          <div class="stat"><strong>5 Plans</strong><span>Pricing options</span></div>
           <div class="stat"><strong>3 Formats</strong><span>Aspect ratios</span></div>
         </div>
       </div>
@@ -602,81 +276,61 @@
       <div class="container">
         <div class="section-heading">
           <h2>Your <span class="gradient-text">AI Studio</span></h2>
-          <p>Choose your model, set your options, and review the estimated credits.</p>
+          <p>Choose your model, format and settings before preparing a request.</p>
         </div>
 
         <div class="tool-grid">
           <!-- IMAGE GENERATOR -->
-          <section class="card" aria-labelledby="imageHeading">
+          <section class="card">
             <div class="card-header">
               <div class="card-icon">🎨</div>
               <div>
-                <h3 id="imageHeading">Text to Image</h3>
-                <p>Create an image concept from your words.</p>
+                <h3>Text to Image</h3>
+                <p>Describe the image you want to create.</p>
               </div>
             </div>
 
             <div class="field">
-              <label for="imagePrompt">Describe your image</label>
-              <textarea id="imagePrompt" maxlength="3000"
-                placeholder="Example: A magical futuristic city at sunset, cinematic lighting, highly detailed..."></textarea>
+              <label for="imagePrompt">Image prompt</label>
+              <textarea id="imagePrompt" maxlength="3000" placeholder="Example: A futuristic city at sunset, cinematic lighting, highly detailed..."></textarea>
               <small id="imageCharCount">0 / 3000 characters</small>
             </div>
 
             <div class="field">
-              <label>Choose image model</label>
+              <label>Image quality</label>
               <div id="imageModels">
-                <button type="button" class="model-option selected" data-image-model="0">
-                  <span class="model-top">
-                    <span class="model-name">1. Normal</span>
-                    <span class="model-credit">FREE</span>
-                  </span>
-                  <span class="model-desc">Basic image quality • 0 extra credits</span>
+                <button type="button" class="model-option selected" data-model="0" aria-pressed="true">
+                  <span class="model-top"><span class="model-name">1. Normal</span><span class="model-credit">FREE</span></span>
+                  <span class="model-desc">Standard quality • 0 extra credits</span>
                 </button>
-
-                <button type="button" class="model-option" data-image-model="1">
-                  <span class="model-top">
-                    <span class="model-name">2. Better</span>
-                    <span class="model-credit">FREE</span>
-                  </span>
-                  <span class="model-desc">Enhanced detail • 0 extra credits</span>
+                <button type="button" class="model-option" data-model="1" aria-pressed="false">
+                  <span class="model-top"><span class="model-name">2. Better</span><span class="model-credit">FREE</span></span>
+                  <span class="model-desc">Enhanced quality • 0 extra credits</span>
                 </button>
-
-                <button type="button" class="model-option" data-image-model="2">
-                  <span class="model-top">
-                    <span class="model-name">3. High</span>
-                    <span class="model-credit paid">+10 CREDITS</span>
-                  </span>
-                  <span class="model-desc">Higher-quality creation • 10 extra credits</span>
+                <button type="button" class="model-option" data-model="2" aria-pressed="false">
+                  <span class="model-top"><span class="model-name">3. High</span><span class="model-credit paid">+10 CREDITS</span></span>
+                  <span class="model-desc">Higher-quality tier • 10 extra credits</span>
                 </button>
-
-                <button type="button" class="model-option" data-image-model="3">
-                  <span class="model-top">
-                    <span class="model-name">4. Ultra</span>
-                    <span class="model-credit paid">+20 CREDITS</span>
-                  </span>
-                  <span class="model-desc">Premium-quality option • 20 extra credits</span>
+                <button type="button" class="model-option" data-model="3" aria-pressed="false">
+                  <span class="model-top"><span class="model-name">4. Ultra</span><span class="model-credit paid">+20 CREDITS</span></span>
+                  <span class="model-desc">Highest quality tier • 20 extra credits</span>
                 </button>
               </div>
-              <p class="model-note">
-                Quality levels are interface options for now; real model providers
-                have not yet been connected.
-              </p>
+              <p class="model-note">These are quality tiers for now. Real image models are not connected yet.</p>
             </div>
 
             <div class="two-col">
               <div class="field">
-                <label for="imageStyle">Style</label>
+                <label for="imageStyle">Image style</label>
                 <select id="imageStyle">
-                  <option value="Photorealistic">Photorealistic</option>
-                  <option value="Digital art">Digital art</option>
-                  <option value="Anime">Anime</option>
-                  <option value="3D render">3D render</option>
-                  <option value="Watercolor">Watercolor</option>
-                  <option value="Fantasy">Fantasy</option>
+                  <option>Photorealistic</option>
+                  <option>Digital art</option>
+                  <option>Anime</option>
+                  <option>3D render</option>
+                  <option>Watercolor</option>
+                  <option>Fantasy</option>
                 </select>
               </div>
-
               <div class="field">
                 <label for="imageRatio">Aspect ratio</label>
                 <select id="imageRatio">
@@ -688,86 +342,61 @@
             </div>
 
             <div class="credit-summary">
-              <div>
-                <strong>Estimated credits</strong>
-                <span>Model cost for one image</span>
-              </div>
+              <div><strong>Extra model credits</strong><span>For one image request</span></div>
               <div class="credit-total"><strong id="imageCost">0</strong><span>credits</span></div>
             </div>
 
-            <button type="button" class="btn full-width" id="prepareImage">
-              Prepare Image Request
-            </button>
-
+            <button type="button" class="btn full-width" id="prepareImage">Prepare Image Request</button>
             <div class="notice" id="imageNotice" role="status" aria-live="polite"></div>
           </section>
 
-          <!-- IMAGE TO VIDEO -->
-          <section class="card" aria-labelledby="videoHeading">
+          <!-- VIDEO GENERATOR -->
+          <section class="card">
             <div class="card-header">
               <div class="card-icon">🎬</div>
               <div>
-                <h3 id="videoHeading">Image to Video</h3>
-                <p>Choose motion quality, duration, and video format.</p>
+                <h3>Image to Video</h3>
+                <p>Choose video quality, duration and format.</p>
               </div>
             </div>
 
             <div class="field">
-              <label for="videoImage">Upload a starting image</label>
+              <label for="videoImage">Starting image</label>
               <label class="upload-box" for="videoImage">
                 <span>📁 Choose an image from your device</span>
                 <small>JPG, PNG or WebP • Maximum 10 MB</small>
                 <input type="file" id="videoImage" accept="image/jpeg,image/png,image/webp">
-                <img id="imagePreview" class="image-preview" alt="Preview of uploaded image">
+                <img id="imagePreview" class="image-preview" alt="Uploaded image preview">
               </label>
               <div class="notice" id="uploadNotice" role="status" aria-live="polite"></div>
             </div>
 
             <div class="field">
               <label for="motionPrompt">Describe the movement</label>
-              <textarea id="motionPrompt" maxlength="1500"
-                placeholder="Example: Slow cinematic camera movement, flowing hair, gentle wind..."></textarea>
+              <textarea id="motionPrompt" maxlength="1500" placeholder="Example: Slow cinematic zoom, flowing clouds, gentle wind..."></textarea>
             </div>
 
             <div class="field">
-              <label>Choose video model</label>
+              <label>Video quality</label>
               <div id="videoModels">
-                <button type="button" class="model-option selected" data-video-model="0">
-                  <span class="model-top">
-                    <span class="model-name">1. Normal</span>
-                    <span class="model-credit">FREE EXTRA</span>
-                  </span>
-                  <span class="model-desc">Basic quality level • 0 extra credits</span>
+                <button type="button" class="model-option selected" data-model="0" aria-pressed="true">
+                  <span class="model-top"><span class="model-name">1. Normal</span><span class="model-credit">0 EXTRA</span></span>
+                  <span class="model-desc">Standard tier • 0 extra credits</span>
                 </button>
-
-                <button type="button" class="model-option" data-video-model="1">
-                  <span class="model-top">
-                    <span class="model-name">2. Better</span>
-                    <span class="model-credit">FREE EXTRA</span>
-                  </span>
-                  <span class="model-desc">Improved quality level • 0 extra credits</span>
+                <button type="button" class="model-option" data-model="1" aria-pressed="false">
+                  <span class="model-top"><span class="model-name">2. Better</span><span class="model-credit">0 EXTRA</span></span>
+                  <span class="model-desc">Improved tier • 0 extra credits</span>
                 </button>
-
-                <button type="button" class="model-option" data-video-model="2">
-                  <span class="model-top">
-                    <span class="model-name">3. High</span>
-                    <span class="model-credit paid">+10 CREDITS</span>
-                  </span>
-                  <span class="model-desc">Higher-quality option • 10 extra credits</span>
+                <button type="button" class="model-option" data-model="2" aria-pressed="false">
+                  <span class="model-top"><span class="model-name">3. High</span><span class="model-credit paid">+10 CREDITS</span></span>
+                  <span class="model-desc">High quality tier • 10 extra credits</span>
                 </button>
-
-                <button type="button" class="model-option" data-video-model="3">
-                  <span class="model-top">
-                    <span class="model-name">4. Ultra</span>
-                    <span class="model-credit paid">+20 CREDITS</span>
-                  </span>
-                  <span class="model-desc">Premium-quality option • 20 extra credits</span>
+                <button type="button" class="model-option" data-model="3" aria-pressed="false">
+                  <span class="model-top"><span class="model-name">4. Ultra</span><span class="model-credit paid">+20 CREDITS</span></span>
+                  <span class="model-desc">Premium quality tier • 20 extra credits</span>
                 </button>
               </div>
-              <p class="model-note">
-                These are quality tiers, not connected Veo or other provider models.
-                Provider integration is still pending.
-              </p>
+              <p class="model-note">These are quality tiers, not connected Veo or other provider models.</p>
             </div>
 
             <div class="two-col">
@@ -780,7 +409,6 @@
                   <option value="10">10 seconds — 100 credits</option>
                 </select>
               </div>
-
               <div class="field">
                 <label for="videoRatio">Aspect ratio</label>
                 <select id="videoRatio">
@@ -792,20 +420,11 @@
             </div>
 
             <div class="credit-summary">
-              <div>
-                <strong>Total estimated credits</strong>
-                <span id="videoBreakdown">50 duration + 0 model</span>
-              </div>
-              <div class="credit-total">
-                <strong id="videoCost">50</strong>
-                <span>credits</span>
-              </div>
+              <div><strong>Total estimated credits</strong><span id="videoBreakdown">50 duration + 0 model</span></div>
+              <div class="credit-total"><strong id="videoCost">50</strong><span>credits</span></div>
             </div>
 
-            <button type="button" class="btn full-width" id="prepareVideo">
-              Prepare Video Request
-            </button>
-
+            <button type="button" class="btn full-width" id="prepareVideo">Prepare Video Request</button>
             <div class="notice" id="videoNotice" role="status" aria-live="polite"></div>
           </section>
         </div>
@@ -816,103 +435,93 @@
       <div class="container">
         <div class="section-heading">
           <h2>Made for <span class="gradient-text">creativity</span></h2>
-          <p>A simple studio interface designed for different creative needs.</p>
+          <p>A simple studio interface for creative projects.</p>
         </div>
-
         <div class="features">
-          <article class="feature">
-            <div>🎚️</div>
-            <h3>Four quality levels</h3>
-            <p>Compare Normal, Better, High, and Ultra options in one place.</p>
-          </article>
-          <article class="feature">
-            <div>📐</div>
-            <h3>Flexible formats</h3>
-            <p>Choose square, landscape, or portrait formats for your projects.</p>
-          </article>
-          <article class="feature">
-            <div>🧮</div>
-            <h3>Clear credit estimates</h3>
-            <p>See duration and model costs before preparing a video request.</p>
-          </article>
+          <article class="feature"><div>🎚️</div><h3>Four quality levels</h3><p>Choose Normal, Better, High or Ultra depending on your needs.</p></article>
+          <article class="feature"><div>📐</div><h3>Flexible formats</h3><p>Square, landscape and portrait aspect ratio options.</p></article>
+          <article class="feature"><div>🧮</div><h3>Transparent estimates</h3><p>See duration and model costs before preparing a video request.</p></article>
         </div>
       </div>
     </section>
 
+    <!-- ALL FIVE PRICING PLANS -->
     <section class="section" id="pricing">
       <div class="container">
         <div class="section-heading">
-          <h2>Simple <span class="gradient-text">plans</span></h2>
-          <p>These are proposed plans, not active subscriptions.</p>
-          <!-- ₹999 PLAN -->
-<article class="price-card">
-  <h3>Premium Studio</h3>
-  <div class="price">₹999<span style="font-size:13px">/month</span></div>
-  <p>Proposed plan — not available for purchase</p>
-  <ul>
-    <li>Proposed 20,000 credits/month</li>
-    <li>High and Ultra quality options</li>
-    <li>Image and video creation tools</li>
-  </ul>
-  <a href="#tools" class="btn btn-secondary full-width"
-     style="display:block;text-align:center">Explore Studio</a>
-</article>
-
-<!-- ₹1,999 PLAN -->
-<article class="price-card">
-  <h3>Ultimate Studio</h3>
-  <div class="price">₹1,999<span style="font-size:13px">/month</span></div>
-  <p>Proposed plan — not available for purchase</p>
-  <ul>
-    <li>Proposed 50,000 credits/month</li>
-    <li>High and Ultra quality options</li>
-    <li>Designed for frequent creators</li>
-  </ul>
-  <a href="#tools" class="btn btn-secondary full-width"
-     style="display:block;text-align:center">Explore Studio</a>
-</article>
+          <h2>Choose your <span class="gradient-text">plan</span></h2>
+          <p>Five proposed plans for different creative needs.</p>
         </div>
 
         <div class="pricing-grid">
           <article class="price-card">
+            <span class="plan-label">GET STARTED</span>
             <h3>Free</h3>
             <div class="price">₹0</div>
-            <p>Proposed starter plan</p>
+            <p>For exploring the platform</p>
             <ul>
-              <li>Proposed 500 credits/month</li>
+              <li>500 proposed credits/month</li>
               <li>Normal and Better tiers</li>
-              <li>Access to the studio interface</li>
+              <li>Image and video studio interface</li>
             </ul>
-            <a href="#tools" class="btn btn-secondary full-width" style="display:block;text-align:center">Explore Studio</a>
-          </article>
-
-          <article class="price-card highlight">
-            <h3>Creator</h3>
-            <div class="price">₹199<span style="font-size:13px">/month</span></div>
-            <p>Proposed plan — not available for purchase</p>
-            <ul>
-              <li>Proposed 2,000 credits/month</li>
-              <li>Higher quality options</li>
-              <li>Subject to real generation costs</li>
-            </ul>
-            <a href="#tools" class="btn full-width" style="display:block;text-align:center">Explore Studio</a>
+            <a href="#tools" class="btn btn-secondary full-width">Explore Studio</a>
           </article>
 
           <article class="price-card">
+            <span class="plan-label">STARTER</span>
+            <h3>Creator</h3>
+            <div class="price">₹199<span style="font-size:13px">/month</span></div>
+            <p>For getting started with creation</p>
+            <ul>
+              <li>2,000 proposed credits/month</li>
+              <li>High and Ultra tiers in the interface</li>
+              <li>Image and video tools</li>
+            </ul>
+            <a href="#tools" class="btn btn-secondary full-width">Explore Studio</a>
+          </article>
+
+          <article class="price-card highlight">
+            <span class="plan-label">POPULAR</span>
             <h3>Pro Studio</h3>
             <div class="price">₹599<span style="font-size:13px">/month</span></div>
-            <p>Proposed plan — not available for purchase</p>
+            <p>For regular creators</p>
             <ul>
-              <li>Proposed 10,000 credits/month</li>
-              <li>Premium quality options</li>
-              <li>Subject to real generation costs</li>
+              <li>10,000 proposed credits/month</li>
+              <li>All four quality tiers in the interface</li>
+              <li>Flexible aspect ratios</li>
             </ul>
-            <a href="#tools" class="btn btn-secondary full-width" style="display:block;text-align:center">Explore Studio</a>
+            <a href="#tools" class="btn full-width">Explore Studio</a>
+          </article>
+
+          <article class="price-card">
+            <span class="plan-label">ADVANCED</span>
+            <h3>Premium Studio</h3>
+            <div class="price">₹999<span style="font-size:13px">/month</span></div>
+            <p>For frequent creative work</p>
+            <ul>
+              <li>20,000 proposed credits/month</li>
+              <li>All four quality tiers in the interface</li>
+              <li>Image and video request options</li>
+            </ul>
+            <a href="#tools" class="btn btn-secondary full-width">Explore Studio</a>
+          </article>
+
+          <article class="price-card">
+            <span class="plan-label">MAXIMUM</span>
+            <h3>Ultimate Studio</h3>
+            <div class="price">₹1,999<span style="font-size:13px">/month</span></div>
+            <p>For high-volume creative projects</p>
+            <ul>
+              <li>50,000 proposed credits/month</li>
+              <li>All four quality tiers in the interface</li>
+              <li>Flexible video duration and format</li>
+            </ul>
+            <a href="#tools" class="btn btn-secondary full-width">Explore Studio</a>
           </article>
         </div>
 
-        <p style="text-align:center;color:var(--muted);font-size:12px;margin-top:18px">
-          No payment is collected on this page. Generation and credit accounts have not been connected.
+        <p style="text-align:center;color:var(--muted);font-size:12px;margin-top:20px">
+          These plans and credit allowances are proposals only. Payments, accounts and real AI generation are not enabled.
         </p>
       </div>
     </section>
@@ -921,45 +530,32 @@
       <div class="container">
         <div class="section-heading">
           <h2>Frequently asked questions</h2>
-          <p>What to know before using WebSpark AI.</p>
+          <p>Important details about the current version.</p>
         </div>
-
         <div class="faq">
           <details>
-            <summary>Are image and video generation working right now?</summary>
-            <p>
-              Not yet. This version lets you choose options and calculate estimated credits.
-              A real AI model and secure backend still need to be connected.
-            </p>
+            <summary>Are all five plans available for purchase?</summary>
+            <p>No. The five plans are displayed as proposed pricing. Payment processing has not been implemented.</p>
           </details>
           <details>
-            <summary>Are the first two quality levels free?</summary>
-            <p>
-              The first two tiers add zero model credits in this interface.
-              This does not guarantee that an eventual generation provider will be free to operate.
-            </p>
+            <summary>Does image or video generation work yet?</summary>
+            <p>This version prepares request details and calculates estimated credits. A real AI provider still needs to be connected.</p>
+          </details>
+          <details>
+            <summary>Are Normal and Better free?</summary>
+            <p>Both have zero additional model credits in this interface. The eventual cost of running an actual AI model must still be checked.</p>
           </details>
           <details>
             <summary>How are video credits calculated?</summary>
-            <p>
-              The duration costs 50, 60, 80, or 100 credits. High adds 10 model credits
-              and Ultra adds 20 model credits. The displayed total is duration plus model cost.
-            </p>
+            <p>Duration costs 50, 60, 80 or 100 credits. High adds 10 and Ultra adds 20. The displayed total combines duration and model costs.</p>
           </details>
           <details>
-            <summary>Will credits actually be deducted?</summary>
-            <p>
-              No. These are estimates only. Real deductions need a secure server-side credit
-              system so visitors cannot change their balance in the browser.
-            </p>
+            <summary>Will credits be deducted when I click a button?</summary>
+            <p>No. The current page only calculates estimated costs. Actual balances and deductions require a secure backend.</p>
           </details>
           <details>
-            <summary>Why aren't the models called Veo or Nano Banana?</summary>
-            <p>
-              Provider-specific names should only be displayed when those models are genuinely
-              integrated. Nano Banana is associated with image generation/editing, not a generic
-              video model. This version uses quality tiers to avoid claiming unsupported integrations.
-            </p>
+            <summary>Will you add Nano Banana and Veo?</summary>
+            <p>Provider-specific names should only be shown when those models are genuinely integrated. Nano Banana belongs in an image-generation/editing context, not as a generic video model.</p>
           </details>
         </div>
       </div>
@@ -983,19 +579,14 @@
 
       const imageModelCredits = [0, 0, 10, 20];
       const videoModelCredits = [0, 0, 10, 20];
-      const durationCredits = {
-        4: 50,
-        5: 60,
-        8: 80,
-        10: 100
-      };
+      const durationCredits = {4: 50, 5: 60, 8: 80, 10: 100};
 
       let selectedImageModel = 0;
       let selectedVideoModel = 0;
       let uploadedImage = null;
       let uploadedImageUrl = null;
 
-      const $ = (id) => document.getElementById(id);
+      const $ = id => document.getElementById(id);
 
       function showNotice(id, message, type = "info") {
         const element = $(id);
@@ -1004,9 +595,8 @@
       }
 
       function clearNotice(id) {
-        const element = $(id);
-        element.textContent = "";
-        element.className = "notice";
+        $(id).textContent = "";
+        $(id).className = "notice";
       }
 
       function updateImageCost() {
@@ -1015,61 +605,51 @@
 
       function updateVideoCost() {
         const duration = Number($("videoDuration").value);
-        const durationCost = durationCredits[duration] ?? 50;
-        const modelCost = videoModelCredits[selectedVideoModel];
-        $("videoCost").textContent = durationCost + modelCost;
-        $("videoBreakdown").textContent =
-          durationCost + " duration + " + modelCost + " model";
+        const base = durationCredits[duration] ?? 50;
+        const model = videoModelCredits[selectedVideoModel];
+        $("videoCost").textContent = base + model;
+        $("videoBreakdown").textContent = base + " duration + " + model + " model";
       }
 
-      function selectModel(containerId, attribute, index, onSelect) {
+      function setupModelButtons(containerId, callback) {
         const container = $(containerId);
-        const buttons = container.querySelectorAll("button[" + attribute + "]");
 
-        buttons.forEach((button) => {
-          const isSelected = Number(button.getAttribute(attribute)) === index;
-          button.classList.toggle("selected", isSelected);
-          button.setAttribute("aria-pressed", String(isSelected));
+        container.addEventListener("click", event => {
+          const button = event.target.closest("button[data-model]");
+          if (!button) return;
+
+          const index = Number(button.dataset.model);
+          if (!Number.isInteger(index) || index < 0 || index > 3) return;
+
+          container.querySelectorAll("button[data-model]").forEach(item => {
+            const selected = item === button;
+            item.classList.toggle("selected", selected);
+            item.setAttribute("aria-pressed", String(selected));
+          });
+
+          callback(index);
         });
-
-        onSelect(index);
       }
 
-      $("imageModels").addEventListener("click", (event) => {
-        const button = event.target.closest("button[data-image-model]");
-        if (!button) return;
-
-        selectModel(
-          "imageModels",
-          "data-image-model",
-          Number(button.dataset.imageModel),
-          (index) => { selectedImageModel = index; }
-        );
+      setupModelButtons("imageModels", index => {
+        selectedImageModel = index;
         updateImageCost();
         clearNotice("imageNotice");
       });
 
-      $("videoModels").addEventListener("click", (event) => {
-        const button = event.target.closest("button[data-video-model]");
-        if (!button) return;
-
-        selectModel(
-          "videoModels",
-          "data-video-model",
-          Number(button.dataset.videoModel),
-          (index) => { selectedVideoModel = index; }
-        );
+      setupModelButtons("videoModels", index => {
+        selectedVideoModel = index;
         updateVideoCost();
         clearNotice("videoNotice");
       });
-
-      $("videoDuration").addEventListener("change", updateVideoCost);
 
       $("imagePrompt").addEventListener("input", () => {
         $("imageCharCount").textContent =
           $("imagePrompt").value.length + " / 3000 characters";
         clearNotice("imageNotice");
       });
+
+      $("videoDuration").addEventListener("change", updateVideoCost);
 
       $("videoImage").addEventListener("change", () => {
         clearNotice("uploadNotice");
@@ -1086,14 +666,14 @@
         if (!allowedTypes.includes(file.type)) {
           $("videoImage").value = "";
           uploadedImage = null;
-          showNotice("uploadNotice", "Please select a JPG, PNG, or WebP image.", "error");
+          showNotice("uploadNotice", "Choose a JPG, PNG or WebP image.", "error");
           return;
         }
 
         if (file.size > 10 * 1024 * 1024) {
           $("videoImage").value = "";
           uploadedImage = null;
-          showNotice("uploadNotice", "Image must be 10 MB or smaller.", "error");
+          showNotice("uploadNotice", "The image must be 10 MB or smaller.", "error");
           return;
         }
 
@@ -1104,8 +684,7 @@
 
         $("imagePreview").src = uploadedImageUrl;
         $("imagePreview").style.display = "block";
-
-        showNotice("uploadNotice", "Image selected: " + file.name, "info");
+        showNotice("uploadNotice", "Image selected: " + file.name);
         clearNotice("videoNotice");
       });
 
@@ -1118,9 +697,10 @@
           return;
         }
 
+        const modelNames = ["Normal", "Better", "High", "Ultra"];
         const request = {
           prompt,
-          modelTier: selectedImageModel + 1,
+          model: modelNames[selectedImageModel],
           extraCredits: imageModelCredits[selectedImageModel],
           style: $("imageStyle").value,
           aspectRatio: $("imageRatio").value
@@ -1128,19 +708,17 @@
 
         showNotice(
           "imageNotice",
-          "Your image request is prepared. " +
-          "Tier: " + request.modelTier +
-          " • Style: " + request.style +
-          " • Ratio: " + request.aspectRatio +
-          " • Estimated model credits: " + request.extraCredits +
-          ". Real image generation is not connected yet.",
-          "info"
+          "Image request prepared • " + request.model +
+          " • " + request.style +
+          " • Ratio " + request.aspectRatio +
+          " • Estimated extra model credits: " + request.extraCredits +
+          ". Real generation is not connected yet."
         );
       });
 
       $("prepareVideo").addEventListener("click", () => {
         if (!uploadedImage) {
-          showNotice("videoNotice", "Please upload an image before preparing a video request.", "error");
+          showNotice("videoNotice", "Please upload a starting image first.", "error");
           $("videoImage").focus();
           return;
         }
@@ -1148,12 +726,13 @@
         const duration = Number($("videoDuration").value);
         const durationCost = durationCredits[duration];
         const modelCost = videoModelCredits[selectedVideoModel];
+        const modelNames = ["Normal", "Better", "High", "Ultra"];
         const total = durationCost + modelCost;
 
         const request = {
           imageName: uploadedImage.name,
           motionPrompt: $("motionPrompt").value.trim(),
-          modelTier: selectedVideoModel + 1,
+          model: modelNames[selectedVideoModel],
           durationSeconds: duration,
           aspectRatio: $("videoRatio").value,
           durationCredits: durationCost,
@@ -1163,25 +742,23 @@
 
         showNotice(
           "videoNotice",
-          "Your video request is prepared. " +
-          "Tier: " + request.modelTier +
-          " • Duration: " + request.durationSeconds + " seconds" +
-          " • Ratio: " + request.aspectRatio +
-          " • Duration cost: " + request.durationCredits +
-          " • Model cost: " + request.modelCredits +
-          " • Total: " + request.estimatedTotalCredits +
-          " credits. This is an estimate only; no credits have been deducted and real video generation is not connected yet.",
-          "info"
+          "Video request prepared • " + request.model +
+          " • " + request.durationSeconds + " seconds" +
+          " • Ratio " + request.aspectRatio +
+          " • Duration: " + request.durationCredits +
+          " credits • Model: " + request.modelCredits +
+          " credits • Total: " + request.estimatedTotalCredits +
+          " credits. This is an estimate; no credits were deducted and real video generation is not connected."
         );
       });
 
       $("menuButton").addEventListener("click", () => {
         const nav = $("navLinks");
-        const isOpen = nav.classList.toggle("open");
-        $("menuButton").setAttribute("aria-expanded", String(isOpen));
+        const open = nav.classList.toggle("open");
+        $("menuButton").setAttribute("aria-expanded", String(open));
       });
 
-      $("navLinks").addEventListener("click", (event) => {
+      $("navLinks").addEventListener("click", event => {
         if (event.target.closest("a")) {
           $("navLinks").classList.remove("open");
           $("menuButton").setAttribute("aria-expanded", "false");
