@@ -1,0 +1,651 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#090b14">
+  <meta name="description" content="Explore WebSpark AI, a creative platform for AI image generation, image animation and digital creativity tools.">
+  <title>WebSpark AI — Create Beyond Limits</title>
+
+  <style>
+    :root {
+      --bg: #090b14;
+      --panel: #111522;
+      --panel2: #161b2c;
+      --text: #f5f7ff;
+      --muted: #a2abc1;
+      --border: rgba(255,255,255,.1);
+      --purple: #9272ff;
+      --cyan: #62e8f5;
+      --radius: 20px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-padding-top: 90px; }
+    body {
+      margin: 0;
+      background:
+        radial-gradient(ellipse at 12% 0%, rgba(108,72,210,.14), transparent 35%),
+        radial-gradient(ellipse at 92% 20%, rgba(42,173,190,.09), transparent 30%),
+        var(--bg);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.6;
+    }
+    a { color: inherit; text-decoration: none; }
+    button, input, textarea, select { font: inherit; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+    button { cursor: pointer; }
+    img { max-width: 100%; }
+    .container { width: min(1140px, calc(100% - 40px)); margin: auto; }
+
+    .notice {
+      padding: 9px 15px;
+      text-align: center;
+      font-size: 12px;
+      color: #d9d1ff;
+      background: rgba(146,114,255,.09);
+      border-bottom: 1px solid var(--border);
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(9,11,20,.88);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav {
+      min-height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 850; font-size: 20px; letter-spacing: -.7px; }
+    .brand-icon {
+      width: 38px; height: 38px; display: grid; place-items: center;
+      border-radius: 12px; background: linear-gradient(135deg, var(--purple), #5c4bd8);
+      box-shadow: 0 5px 25px rgba(146,114,255,.24);
+    }
+    .brand span:last-child span { color: var(--cyan); }
+    .nav-links { display: flex; align-items: center; gap: 26px; color: var(--muted); font-size: 13px; }
+    .nav-links a:hover, .footer-links a:hover { color: var(--text); }
+    .nav-actions { display: flex; align-items: center; gap: 10px; }
+    .menu-toggle { display: none; }
+
+    .btn {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 11px 17px;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 750;
+      transition: transform .2s, border-color .2s, filter .2s;
+    }
+    .btn:hover { transform: translateY(-2px); border-color: rgba(146,114,255,.7); }
+    .btn-primary { background: linear-gradient(135deg, #9878ff, #6e55eb); color: white; border-color: transparent; }
+    .btn-secondary { background: rgba(255,255,255,.035); color: var(--text); }
+    .btn-small { padding: 9px 13px; }
+
+    .hero { padding: 82px 0 72px; overflow: hidden; }
+    .hero-grid { display: grid; grid-template-columns: 1.08fr .92fr; gap: 48px; align-items: center; }
+    .eyebrow {
+      display: inline-flex; gap: 8px; align-items: center;
+      padding: 7px 12px; border: 1px solid var(--border); border-radius: 100px;
+      background: rgba(255,255,255,.035); color: #d3c8ff; font-size: 12px;
+    }
+    .live-dot { width: 7px; height: 7px; border-radius: 50%; background: #63edbd; box-shadow: 0 0 12px #63edbd; }
+    h1 { margin: 23px 0 18px; font-size: clamp(42px, 5.6vw, 70px); line-height: 1.04; letter-spacing: -3.5px; }
+    .gradient-text { background: linear-gradient(100deg, #b6a2ff, #75e9f4); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .hero-copy { max-width: 560px; color: var(--muted); font-size: 16px; }
+    .hero-buttons { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 27px; }
+    .hero-note { margin-top: 18px; color: #8993aa; font-size: 12px; }
+
+    .preview-shell {
+      position: relative; padding: 15px; border-radius: 25px;
+      background: linear-gradient(145deg, rgba(146,114,255,.24), rgba(98,232,245,.08));
+      border: 1px solid rgba(255,255,255,.12);
+      box-shadow: 0 30px 100px rgba(0,0,0,.25);
+    }
+    .preview-window { overflow: hidden; border-radius: 17px; background: #0e1220; border: 1px solid var(--border); }
+    .preview-top { height: 43px; display: flex; align-items: center; gap: 6px; padding: 0 14px; border-bottom: 1px solid var(--border); }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: #5c647b; }
+    .preview-label { margin-left: auto; font-size: 10px; color: #a5aec5; }
+    .artwork {
+      min-height: 300px; display: grid; place-items: center; position: relative; overflow: hidden;
+      background:
+        radial-gradient(ellipse at 48% 38%, rgba(176,137,255,.7), transparent 18%),
+        radial-gradient(ellipse at 50% 60%, rgba(57,220,231,.4), transparent 25%),
+        radial-gradient(ellipse at 65% 30%, rgba(255,139,215,.3), transparent 22%),
+        linear-gradient(140deg, #13162b, #101d32 55%, #17112b);
+    }
+    .artwork::before, .artwork::after { content: ""; position: absolute; border: 1px solid rgba(255,255,255,.17); border-radius: 50%; transform: rotate(-28deg); }
+    .artwork::before { width: 250px; height: 105px; }
+    .artwork::after { width: 300px; height: 145px; transform: rotate(35deg); }
+    .orb { width: 110px; height: 110px; border-radius: 50%; background: radial-gradient(circle at 30% 25%, #f7ddff, #aa86ff 35%, #536ce9 65%, #1b2555); box-shadow: 0 0 70px rgba(144,112,255,.8); z-index: 1; }
+    .art-caption { position: absolute; bottom: 15px; left: 15px; z-index: 2; font-size: 11px; color: #d9e7ff; }
+    .preview-bottom { padding: 15px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .preview-bottom strong { display: block; font-size: 12px; }
+    .preview-bottom small { color: var(--muted); font-size: 10px; }
+    .mini-tag { border: 1px solid rgba(98,232,245,.3); color: var(--cyan); padding: 6px 9px; border-radius: 8px; font-size: 10px; }
+
+    .trust-row { border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .trust-inner { display: flex; justify-content: space-between; gap: 20px; padding: 22px 0; color: #a3acc1; font-size: 12px; flex-wrap: wrap; }
+    .trust-inner span { display: flex; align-items: center; gap: 8px; }
+
+    section { padding: 78px 0; }
+    .section-head { max-width: 670px; margin-bottom: 32px; }
+    .section-kicker { text-transform: uppercase; color: var(--cyan); font-size: 11px; font-weight: 850; letter-spacing: 2px; }
+    h2 { margin: 9px 0 12px; font-size: clamp(29px, 4vw, 43px); letter-spacing: -1.6px; line-height: 1.15; }
+    .section-head p, .muted { color: var(--muted); font-size: 14px; }
+
+    .tool-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 20px; }
+    .tool-card { background: linear-gradient(145deg, rgba(20,25,42,.96), rgba(14,17,29,.96)); border: 1px solid var(--border); border-radius: var(--radius); padding: 25px; min-width: 0; }
+    .tool-card:hover { border-color: rgba(146,114,255,.45); }
+    .tool-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 15px; }
+    .tool-icon { width: 46px; height: 46px; display: grid; place-items: center; border-radius: 14px; background: rgba(146,114,255,.13); font-size: 23px; }
+    .badge { font-size: 10px; border: 1px solid var(--border); border-radius: 8px; padding: 5px 8px; color: #c9bcff; }
+    .tool-card h3 { margin: 0 0 7px; font-size: 21px; }
+    .tool-card > p { color: var(--muted); font-size: 13px; margin: 0 0 20px; }
+    .field-label { display: block; margin: 14px 0 7px; font-size: 12px; color: #dce1f0; font-weight: 700; }
+    textarea, select, input[type="text"] {
+      width: 100%; border: 1px solid var(--border); border-radius: 12px;
+      background: #0a0d17; color: var(--text); padding: 12px 13px; outline: none;
+    }
+    textarea { resize: vertical; min-height: 100px; }
+    textarea:focus, select:focus, input:focus { border-color: var(--purple); }
+    textarea::placeholder, input::placeholder { color: #69738b; }
+    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .upload-area {
+      min-height: 120px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+      border: 1px dashed #515a76; border-radius: 13px; background: rgba(255,255,255,.015);
+      text-align: center; padding: 16px; cursor: pointer;
+    }
+    .upload-area:hover { border-color: var(--cyan); }
+    .upload-area strong { font-size: 13px; }
+    .upload-area small { color: var(--muted); font-size: 11px; }
+    .upload-area input { width: 100%; max-width: 230px; font-size: 11px; }
+    .preview-upload { display: none; max-height: 200px; max-width: 100%; border-radius: 10px; object-fit: contain; margin-top: 10px; }
+    .full { width: 100%; margin-top: 17px; }
+    .status { display: none; margin-top: 13px; padding: 11px 12px; border-radius: 10px; background: rgba(98,232,245,.07); border: 1px solid rgba(98,232,245,.2); color: #b9f5f8; font-size: 12px; overflow-wrap: anywhere; }
+    .status.show { display: block; }
+    .result-placeholder { display: grid; place-items: center; min-height: 100px; margin-top: 14px; border-radius: 12px; background: rgba(255,255,255,.025); border: 1px solid var(--border); color: var(--muted); text-align: center; padding: 14px; font-size: 12px; }
+    .result-placeholder img, .result-placeholder video { max-width: 100%; max-height: 300px; border-radius: 10px; }
+    .result-placeholder:has(img), .result-placeholder:has(video) { display: block; }
+
+    .feature-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 17px; }
+    .feature { padding: 22px; border: 1px solid var(--border); border-radius: 16px; background: rgba(255,255,255,.02); }
+    .feature-icon { font-size: 24px; }
+    .feature h3 { font-size: 15px; margin: 12px 0 5px; }
+    .feature p { margin: 0; color: var(--muted); font-size: 12px; }
+
+    .pricing-grid { display: grid; grid-template-columns: repeat(5, minmax(0,1fr)); gap: 12px; align-items: stretch; }
+    .price-card { border: 1px solid var(--border); border-radius: 17px; padding: 20px 15px; background: rgba(255,255,255,.025); display: flex; flex-direction: column; min-width: 0; }
+    .price-card.featured { border-color: var(--purple); background: linear-gradient(160deg, rgba(146,114,255,.14), rgba(255,255,255,.025)); }
+    .price-card h3 { font-size: 15px; margin: 0; }
+    .price { font-size: 28px; font-weight: 850; letter-spacing: -1px; margin-top: 13px; }
+    .price small { font-size: 10px; font-weight: 500; color: var(--muted); letter-spacing: 0; }
+    .credits { color: var(--cyan); font-size: 11px; margin: 4px 0 14px; }
+    .price-card ul { padding-left: 16px; color: var(--muted); font-size: 11px; line-height: 2; flex: 1; }
+    .price-card .btn { font-size: 11px; padding: 10px 5px; }
+    .pricing-note { color: var(--muted); font-size: 11px; margin-top: 18px; }
+
+    .faq-list { max-width: 800px; display: grid; gap: 10px; }
+    details { border: 1px solid var(--border); border-radius: 13px; padding: 16px 18px; background: rgba(255,255,255,.02); }
+    summary { cursor: pointer; font-size: 13px; font-weight: 750; }
+    details p { color: var(--muted); font-size: 12px; margin-bottom: 0; }
+
+    .cta-box { padding: 38px; border: 1px solid rgba(146,114,255,.3); border-radius: 24px; background: radial-gradient(ellipse at 85% 20%, rgba(98,232,245,.1), transparent 35%), linear-gradient(135deg, rgba(146,114,255,.14), rgba(255,255,255,.025)); display: flex; align-items: center; justify-content: space-between; gap: 25px; }
+    .cta-box h2 { font-size: clamp(25px,3vw,36px); }
+    .cta-box p { color: var(--muted); font-size: 13px; margin-bottom: 0; }
+
+    footer { border-top: 1px solid var(--border); padding: 35px 0 25px; }
+    .footer-main { display: flex; align-items: flex-start; justify-content: space-between; gap: 25px; }
+    .footer-copy { max-width: 380px; color: var(--muted); font-size: 12px; }
+    .footer-links { display: flex; flex-wrap: wrap; gap: 18px; color: var(--muted); font-size: 12px; }
+    .footer-bottom { margin-top: 25px; padding-top: 17px; border-top: 1px solid var(--border); color: #778097; font-size: 11px; display: flex; justify-content: space-between; gap: 15px; flex-wrap: wrap; }
+
+    @media (max-width: 1000px) {
+      .nav-links { gap: 14px; }
+      .pricing-grid { grid-template-columns: repeat(3,minmax(0,1fr)); }
+      .price-card:last-child { grid-column: auto; }
+      .hero-grid { gap: 25px; }
+    }
+    @media (max-width: 760px) {
+      .container { width: min(100% - 28px, 560px); }
+      .nav { min-height: 65px; }
+      .menu-toggle { display: inline-flex; background: transparent; color: var(--text); border: 1px solid var(--border); border-radius: 10px; padding: 8px 11px; }
+      .nav-links {
+        display: none; position: absolute; top: 65px; left: 14px; right: 14px;
+        flex-direction: column; align-items: stretch; padding: 15px; gap: 0;
+        background: #111522; border: 1px solid var(--border); border-radius: 15px;
+      }
+      .nav-links.open { display: flex; }
+      .nav-links a { padding: 12px 8px; }
+      .nav-actions .btn-secondary { display: none; }
+      .hero { padding: 55px 0 48px; }
+      .hero-grid { grid-template-columns: 1fr; }
+      h1 { letter-spacing: -2.2px; }
+      .hero-copy { font-size: 14px; }
+      .preview-shell { max-width: 520px; width: 100%; margin: 5px auto 0; }
+      .artwork { min-height: 245px; }
+      section { padding: 58px 0; }
+      .tool-grid { grid-template-columns: 1fr; }
+      .feature-grid { grid-template-columns: 1fr 1fr; }
+      .pricing-grid { grid-template-columns: 1fr 1fr; }
+      .cta-box { padding: 25px; flex-direction: column; align-items: flex-start; }
+      .footer-main { flex-direction: column; }
+    }
+    @media (max-width: 420px) {
+      .brand { font-size: 17px; }
+      .brand-icon { width: 34px; height: 34px; }
+      .nav-actions .btn-primary { padding: 9px 10px; font-size: 11px; }
+      .hero-buttons .btn { flex: 1; }
+      .trust-inner { display: grid; grid-template-columns: 1fr 1fr; }
+      .feature-grid, .pricing-grid { grid-template-columns: 1fr; }
+      .field-row { grid-template-columns: 1fr; gap: 0; }
+      .tool-card { padding: 19px; }
+      .price-card { padding: 21px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="notice">✨ Your creative workspace for AI-powered ideas — start exploring for free.</div>
+
+  <header>
+    <div class="container nav">
+      <a class="brand" href="#home" aria-label="WebSpark AI home">
+        <span class="brand-icon">✦</span>
+        <span>WebSpark <span>AI</span></span>
+      </a>
+
+      <nav class="nav-links" id="navLinks" aria-label="Main navigation">
+        <a href="#home">Home</a>
+        <a href="#tools">AI Tools</a>
+        <a href="#features">Features</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#faq">FAQ</a>
+      </nav>
+
+      <div class="nav-actions">
+        <a class="btn btn-secondary btn-small" href="#tools">Explore tools</a>
+        <a class="btn btn-primary btn-small" href="#pricing">Get started ↗</a>
+        <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation" aria-expanded="false">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" id="home">
+      <div class="container hero-grid">
+        <div>
+          <div class="eyebrow"><span class="live-dot"></span> YOUR NEXT CREATIVE TOOLKIT</div>
+          <h1>Turn your ideas into <span class="gradient-text">something amazing.</span></h1>
+          <p class="hero-copy">Explore a creative workspace designed for image generation, photo animation and AI-powered creativity. Bring your ideas to life, one prompt at a time.</p>
+          <div class="hero-buttons">
+            <a class="btn btn-primary" href="#tools">Explore AI tools <span>→</span></a>
+            <a class="btn btn-secondary" href="#features">Discover features</a>
+          </div>
+          <p class="hero-note">✦ Built for creators, students, designers and curious minds.</p>
+        </div>
+
+        <div class="preview-shell" aria-label="Decorative AI artwork preview">
+          <div class="preview-window">
+            <div class="preview-top">
+              <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+              <span class="preview-label">WEBSPARK CREATIVE STUDIO</span>
+            </div>
+            <div class="artwork">
+              <div class="orb"></div>
+              <span class="art-caption">IMAGINE · CREATE · EXPLORE</span>
+            </div>
+            <div class="preview-bottom">
+              <div><strong>Creative Universe</strong><small>Abstract digital artwork</small></div>
+              <span class="mini-tag">Studio preview</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="trust-row">
+      <div class="container trust-inner">
+        <span>✦ Image creativity</span>
+        <span>▣ Photo animation</span>
+        <span>⌘ Simple workflow</span>
+        <span>↗ Creator-focused tools</span>
+      </div>
+    </div>
+
+    <section id="tools">
+      <div class="container">
+        <div class="section-head">
+          <div class="section-kicker">Creative studio</div>
+          <h2>Your ideas. <span class="gradient-text">Your creation.</span></h2>
+          <p>Choose a tool to start. These interfaces are ready for integration with a working, free AI model.</p>
+        </div>
+
+        <div class="tool-grid">
+          <article class="tool-card">
+            <div class="tool-heading">
+              <div class="tool-icon">🖼️</div>
+              <span class="badge">TEXT TO IMAGE</span>
+            </div>
+            <h3>AI Image Generator</h3>
+            <p>Describe the picture you imagine and prepare your prompt for image generation.</p>
+
+            <label class="field-label" for="imagePrompt">Describe your image</label>
+            <textarea id="imagePrompt" maxlength="2000" placeholder="A dreamy futuristic city floating above the clouds, cinematic lighting, detailed digital art..."></textarea>
+            <div class="field-row">
+              <div>
+                <label class="field-label" for="imageStyle">Art style</label>
+                <select id="imageStyle">
+                  <option value="Realistic">Photorealistic</option>
+                  <option value="Digital art">Digital art</option>
+                  <option value="Anime">Anime</option>
+                  <option value="3D render">3D render</option>
+                  <option value="Watercolor">Watercolor</option>
+                  <option value="Fantasy">Fantasy</option>
+                </select>
+              </div>
+              <div>
+                <label class="field-label" for="imageRatio">Aspect ratio</label>
+                <select id="imageRatio">
+                  <option value="1:1">Square (1:1)</option>
+                  <option value="16:9">Landscape (16:9)</option>
+                  <option value="9:16">Portrait (9:16)</option>
+                  <option value="4:3">Classic (4:3)</option>
+                </select>
+              </div>
+            </div>
+            <button class="btn btn-primary full" id="prepareImage">✦ Prepare image prompt</button>
+            <div class="status" id="imageStatus" role="status" aria-live="polite"></div>
+            <div class="result-placeholder" id="imageResult">Your generated image preview will appear here once a free AI image model is connected.</div>
+          </article>
+
+          <article class="tool-card">
+            <div class="tool-heading">
+              <div class="tool-icon">🎬</div>
+              <span class="badge">IMAGE TO VIDEO</span>
+            </div>
+            <h3>Image Animator</h3>
+            <p>Choose an image and describe how you want the scene to move.</p>
+
+            <label class="field-label" for="sourceImage">Upload your image</label>
+            <div class="upload-area">
+              <strong>📤 Choose an image</strong>
+              <small>JPG, PNG or WebP · Maximum 10 MB</small>
+              <input id="sourceImage" type="file" accept="image/jpeg,image/png,image/webp">
+              <img class="preview-upload" id="sourcePreview" alt="Uploaded image preview">
+            </div>
+            <label class="field-label" for="videoPrompt">Describe the motion</label>
+            <textarea id="videoPrompt" maxlength="1000" placeholder="Slow cinematic zoom in, gentle clouds moving, soft sunlight..."></textarea>
+            <div class="field-row">
+              <div>
+                <label class="field-label" for="motionStyle">Motion style</label>
+                <select id="motionStyle">
+                  <option value="Cinematic zoom">Cinematic zoom</option>
+                  <option value="Slow pan">Slow camera pan</option>
+                  <option value="Gentle movement">Gentle movement</option>
+                  <option value="Parallax">Parallax effect</option>
+                </select>
+              </div>
+              <div>
+                <label class="field-label" for="videoDuration">Target duration</label>
+                <select id="videoDuration">
+                  <option value="5">5 seconds</option>
+                  <option value="10">10 seconds</option>
+                </select>
+              </div>
+            </div>
+            <button class="btn btn-primary full" id="prepareVideo">▶ Prepare video request</button>
+            <div class="status" id="videoStatus" role="status" aria-live="polite"></div>
+            <div class="result-placeholder" id="videoResult">Your video preview will appear here when a compatible free generation engine is connected.</div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="features">
+      <div class="container">
+        <div class="section-head">
+          <div class="section-kicker">Made for creators</div>
+          <h2>A simpler creative <span class="gradient-text">workflow.</span></h2>
+          <p>A thoughtfully designed foundation for your future AI creative tools.</p>
+        </div>
+        <div class="feature-grid">
+          <article class="feature"><div class="feature-icon">🎯</div><h3>Simple prompts</h3><p>Describe your idea in plain language and organize it into a clearer creative request.</p></article>
+          <article class="feature"><div class="feature-icon">📱</div><h3>Works across screens</h3><p>A responsive layout designed for phones, tablets and desktop browsers.</p></article>
+          <article class="feature"><div class="feature-icon">🪄</div><h3>Creative styles</h3><p>Explore different visual styles and formats when supported by the connected model.</p></article>
+          <article class="feature"><div class="feature-icon">📥</div><h3>Download-ready design</h3><p>Space for generated previews and download controls once generation is implemented.</p></article>
+          <article class="feature"><div class="feature-icon">🪙</div><h3>Planned credit system</h3><p>Monthly credits can be introduced with secure, server-side usage tracking.</p></article>
+          <article class="feature"><div class="feature-icon">🔒</div><h3>Security first</h3><p>Authentication and private API credentials will be handled separately from public frontend code.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section id="pricing">
+      <div class="container">
+        <div class="section-head">
+          <div class="section-kicker">Planned membership</div>
+          <h2>Plans for every <span class="gradient-text">creator.</span></h2>
+          <p>These are proposed plans. Paid subscriptions are not active yet.</p>
+        </div>
+        <div class="pricing-grid">
+          <article class="price-card">
+            <h3>Free</h3><div class="price">₹0</div><div class="credits">500 credits/month</div>
+            <ul><li>Explore the studio</li><li>Basic tool access</li><li>Standard queue, if available</li></ul>
+            <a class="btn btn-secondary" href="#tools">Explore tools</a>
+          </article>
+          <article class="price-card">
+            <h3>Starter</h3><div class="price">₹199<small>/month</small></div><div class="credits">2,000 credits/month</div>
+            <ul><li>Proposed plan</li><li>Image and video tools</li><li>Basic history</li></ul>
+            <button class="btn btn-secondary planNotice" type="button">Coming later</button>
+          </article>
+          <article class="price-card featured">
+            <h3>Creator ✦</h3><div class="price">₹599<small>/month</small></div><div class="credits">10,000 credits/month</div>
+            <ul><li>Proposed plan</li><li>Extended history</li><li>Standard priority, if supported</li></ul>
+            <button class="btn btn-primary planNotice" type="button">Coming later</button>
+          </article>
+          <article class="price-card">
+            <h3>Pro</h3><div class="price">₹999<small>/month</small></div><div class="credits">20,000 credits/month</div>
+            <ul><li>Proposed plan</li><li>More monthly credits</li><li>Higher priority, if supported</li></ul>
+            <button class="btn btn-secondary planNotice" type="button">Coming later</button>
+          </article>
+          <article class="price-card">
+            <h3>Ultimate</h3><div class="price">₹1,999<small>/month</small></div><div class="credits">50,000 credits/month</div>
+            <ul><li>Proposed plan</li><li>Highest planned credit tier</li><li>Priority, if supported</li></ul>
+            <button class="btn btn-secondary planNotice" type="button">Coming later</button>
+          </article>
+        </div>
+        <p class="pricing-note">Credit costs, generation limits and paid features will be finalized after a compatible free AI engine is verified. No payments are being collected on this page.</p>
+      </div>
+    </section>
+
+    <section id="faq">
+      <div class="container">
+        <div class="section-head">
+          <div class="section-kicker">Quick answers</div>
+          <h2>Frequently asked <span class="gradient-text">questions.</span></h2>
+        </div>
+        <div class="faq-list">
+          <details><summary>Is WebSpark AI free to use?</summary><p>The current website interface is free to explore. Actual AI generation will be enabled after a compatible free model or service is configured.</p></details>
+          <details><summary>Can I generate real AI videos right now?</summary><p>Not yet. The Image Animator interface is prepared, but a working video-generation engine still needs to be connected and tested.</p></details>
+          <details><summary>Are the subscription plans active?</summary><p>No. The prices and credit amounts are proposed plans only. Payment functionality has not been activated.</p></details>
+          <details><summary>Will the website work on mobile?</summary><p>The page uses a responsive layout intended for mobile, tablet and desktop browsers.</p></details>
+          <details><summary>Will my uploaded images be stored?</summary><p>This frontend does not upload images to a server. A future backend must clearly explain its image storage and privacy behavior before generation is enabled.</p></details>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <div class="cta-box">
+          <div>
+            <div class="section-kicker">Your creative journey starts here</div>
+            <h2>Imagine it. Then make it real.</h2>
+            <p>Explore the WebSpark AI studio and get ready for new creative tools.</p>
+          </div>
+          <a class="btn btn-primary" href="#tools">Open creative studio →</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-main">
+        <div>
+          <a class="brand" href="#home"><span class="brand-icon">✦</span><span>WebSpark <span>AI</span></span></a>
+          <p class="footer-copy">A creative platform in development for AI images, photo animation and digital creativity. Built step by step with a focus on accessible tools.</p>
+        </div>
+        <div class="footer-links">
+          <a href="#home">Home</a><a href="#tools">AI Tools</a><a href="#features">Features</a><a href="#pricing">Pricing</a><a href="#faq">FAQ</a>
+          <a href="https://gargatharv88-glitch.github.io/aihub/" target="_blank" rel="noopener noreferrer">AIHub ↗</a>
+          <a href="https://gargatharv88-glitch.github.io/webnova-demo/" target="_blank" rel="noopener noreferrer">WebNova ↗</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© <span id="year"></span> WebSpark AI. All rights reserved.</span>
+        <span>Creative tools for curious minds ✦</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    "use strict";
+
+    const menuToggle = document.getElementById("menuToggle");
+    const navLinks = document.getElementById("navLinks");
+
+    menuToggle.addEventListener("click", () => {
+      const isOpen = navLinks.classList.toggle("open");
+      menuToggle.setAttribute("aria-expanded", String(isOpen));
+      menuToggle.textContent = isOpen ? "✕" : "☰";
+    });
+
+    navLinks.querySelectorAll("a").forEach(link => {
+      link.addEventListener("click", () => {
+        navLinks.classList.remove("open");
+        menuToggle.setAttribute("aria-expanded", "false");
+        menuToggle.textContent = "☰";
+      });
+    });
+
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    function showStatus(id, message) {
+      const element = document.getElementById(id);
+      element.textContent = message;
+      element.classList.add("show");
+    }
+
+    document.getElementById("prepareImage").addEventListener("click", () => {
+      const prompt = document.getElementById("imagePrompt").value.trim();
+      const style = document.getElementById("imageStyle").value;
+      const ratio = document.getElementById("imageRatio").value;
+
+      if (!prompt) {
+        showStatus("imageStatus", "Please describe the image you want to create first.");
+        document.getElementById("imagePrompt").focus();
+        return;
+      }
+
+      showStatus(
+        "imageStatus",
+        "Your prompt is ready. Style: " + style + ". Aspect ratio: " + ratio +
+        ". Real image generation is not connected yet; no credits were used."
+      );
+
+      const result = document.getElementById("imageResult");
+      result.textContent = "Prepared prompt: " + prompt + " | Style: " + style + " | Ratio: " + ratio +
+        ". Connect a compatible free AI model to generate an actual image.";
+    });
+
+    const sourceImage = document.getElementById("sourceImage");
+    const sourcePreview = document.getElementById("sourcePreview");
+    let currentImageUrl = null;
+
+    sourceImage.addEventListener("change", () => {
+      const file = sourceImage.files && sourceImage.files[0];
+
+      if (currentImageUrl) {
+        URL.revokeObjectURL(currentImageUrl);
+        currentImageUrl = null;
+      }
+
+      sourcePreview.removeAttribute("src");
+      sourcePreview.style.display = "none";
+
+      if (!file) return;
+
+      const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
+      if (!allowedTypes.includes(file.type)) {
+        sourceImage.value = "";
+        showStatus("videoStatus", "Unsupported image format. Please choose a JPG, PNG or WebP image.");
+        return;
+      }
+
+      if (file.size > 10 * 1024 * 1024) {
+        sourceImage.value = "";
+        showStatus("videoStatus", "The image is too large. Please choose a file smaller than 10 MB.");
+        return;
+      }
+
+      currentImageUrl = URL.createObjectURL(file);
+      sourcePreview.src = currentImageUrl;
+      sourcePreview.style.display = "block";
+      showStatus("videoStatus", "Image loaded locally. It has not been uploaded to a server.");
+    });
+
+    document.getElementById("prepareVideo").addEventListener("click", () => {
+      const file = sourceImage.files && sourceImage.files[0];
+      const prompt = document.getElementById("videoPrompt").value.trim();
+      const motion = document.getElementById("motionStyle").value;
+      const duration = document.getElementById("videoDuration").value;
+
+      if (!file) {
+        showStatus("videoStatus", "Please upload an image first.");
+        sourceImage.focus();
+        return;
+      }
+
+      if (!prompt) {
+        showStatus("videoStatus", "Please describe the motion you want.");
+        document.getElementById("videoPrompt").focus();
+        return;
+      }
+
+      showStatus(
+        "videoStatus",
+        "Your request is ready. Motion: " + motion + ". Target duration: " + duration +
+        " seconds. Real AI video generation is not connected yet; no credits were used."
+      );
+
+      const result = document.getElementById("videoResult");
+      result.textContent = "Prepared video request: " + prompt + " | Motion: " + motion +
+        " | Duration: " + duration + " seconds. A compatible free video-generation engine is needed to create the video.";
+    });
+
+    document.querySelectorAll(".planNotice").forEach(button => {
+      button.addEventListener("click", () => {
+        alert("Subscriptions are not active yet. We will enable plans after free AI generation and credit tracking are tested.");
+      });
+    });
+
+    window.addEventListener("beforeunload", () => {
+      if (currentImageUrl) URL.revokeObjectURL(currentImageUrl);
+    });
+  </script>
+</body>
+</html>
+```
